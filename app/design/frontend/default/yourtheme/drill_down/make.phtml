@@ -1,0 +1,88 @@
+<ul id="drilldown">
+<?php 
+/*require_once 'app/Mage.php';
+
+Mage::init();*/
+
+    $attribute = Mage::getSingleton('eav/config')->getAttribute(Mage_Catalog_Model_Product::ENTITY, 'make');
+    echo " <li> {$attribute->getFrontendLabel()}:\n";
+    echo "<select class='att-select' id='first'>\n";
+	echo '<option value="select"> Please Select...</option>';
+    foreach ($attribute->getSource()->getAllOptions() as $option)
+    {
+		if ($option['label'])
+		{
+        echo "\n\t  <option value='{$option['label']}'>{$option['label']}</option>";
+		}
+    }
+    echo "\n</select> </li>";
+
+
+
+
+?>
+</ul> 
+<script type="text/javascript"> 
+//custom JS to get URLS 
+
+function path_trim(path) 
+{ 
+    var LO = path.lastIndexOf('web'); 
+    var Trimmed = path.slice(LO + 3); 
+    return Trimmed;
+}
+
+var modelUrl = '<?php echo __DIR__; ?>/model.php';
+
+jQuery('#first').change(function(){ 
+alert(modelUrl);
+	jQuery.ajax({ 
+	url: 'test-me2.php',
+	type: 'GET',
+	data: { 'make' : this.value},
+	success: function(data) {
+		//we need a condition for if #second already exists, if it does remove it and replace it 
+		if (jQuery('#second').length)
+		{
+			jQuery('#second').parent().remove();
+			jQuery('#second').remove(); 
+			jQuery('#drilldown').append('<li>' + data + '</li>');
+			if (jQuery('#third').length)
+			{
+				jQuery('#third').parent().remove();
+				jQuery('#third').remove();
+			}
+		}
+		else 
+		{
+			jQuery('#drilldown').append('<li>' + data + '</li>');
+		}
+			jQuery('#second').change(function(){ 
+			jQuery.ajax({ 
+			url: 'test-me3.php',
+			type: 'GET',
+			data: { 'model' : this.value},
+			success: function(data) {
+				if (jQuery('#third').length)
+				{
+					jQuery('#third').parent().remove();
+					jQuery('#third').remove(); 
+					jQuery('#drilldown').append('<li>' + data + '</li>');
+				}
+				else 
+				{
+				jQuery('#drilldown').append('<li>' + data + '</li>');
+				}
+				
+				}
+			});
+		
+		});
+		}
+	});
+
+});
+
+
+
+</script> 
