@@ -8,6 +8,11 @@ Mage::init();
 
 $model = $_GET["model"];
 
+$make = $_GET["make"];
+
+
+if ($model != "select") 
+{
 /*if (!$model) //debugging purposes 
 {
 	$model = "Volare";	
@@ -16,12 +21,17 @@ $model = $_GET["model"];
 var_dump($model);*/
 
 $collection = Mage::getResourceModel('catalog/product_collection')
-						 ->addAttributeToSelect('*')
+						 ->addAttributeToSelect(array('make','model','year'))
 						 ->addFieldtoFilter('model',array(
 						 	'eq'=>Mage::getResourceModel('catalog/product')
                         		->getAttribute('model')
                         		->getSource()
-                        		->getOptionId($model)));
+                        		->getOptionId($model)))
+						  ->addFieldtoFilter('make',array(
+						 	'eq'=>Mage::getResourceModel('catalog/product')
+                        		->getAttribute('make')
+                        		->getSource()
+                        		->getOptionId($make)));
 						 
 //$collection->load(true); 
 
@@ -29,9 +39,8 @@ $collection = Mage::getResourceModel('catalog/product_collection')
 
 foreach ($collection as $product) 
 {
-	$_product = Mage::getModel('catalog/product')->load($product->getId());
-	//var_dump($_product);
-	$years[] = $_product->getAttributeText('year');
+	
+	$years[] = $product->getAttributeText('year');
 
 }
 
@@ -39,18 +48,18 @@ $years = array_unique($years);
 
 sort($years);
 
-echo "Year: <select class='att-select' id='third'>"; 
-
+echo "\nYear: <select class='att-select' id='third'>"; 
+echo '<option value="select"> Please Select...</option>';
 foreach ($years as $year)
 {
-	echo "  <option value='" . $year . "'>" . $year . "</option>";
+	echo "\n\t  <option value='" . $year . "'>" . $year . "</option>";
 		
 }
 
-echo "</select>";
+echo "\n</select>";
 
 
-
+}
 
 
 ?> 

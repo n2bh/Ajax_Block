@@ -7,8 +7,11 @@ ini_set('error_reporting', E_ALL);
 Mage::init();
 
 
+
 $make = $_GET["make"];
 
+if ($make != "select") //if statement stopping null queries
+{
 /*if (!$make) //debugging purposes 
 {
 	$make = "Subaru";	
@@ -16,9 +19,11 @@ $make = $_GET["make"];
 
 var_dump($make);*/
 
+if ($make != "select")
+{
 
 $collection = Mage::getResourceModel('catalog/product_collection')
-						 ->addAttributeToSelect('*')
+						 ->addAttributeToSelect(array('model'))
 						 ->addFieldtoFilter('make',array(
 						 	'eq'=>Mage::getResourceModel('catalog/product')
                         		->getAttribute('make')
@@ -31,10 +36,7 @@ $collection = Mage::getResourceModel('catalog/product_collection')
 
 foreach ($collection as $product) 
 {
-	$_product = Mage::getModel('catalog/product')->load($product->getId());
-	//var_dump($_product);
-	$models[] = $_product->getAttributeText('model');
-
+	$models[] = $product->getAttributeText('model');
 }
 
 $models = array_unique($models); 
@@ -43,16 +45,18 @@ sort($models);
 
 array_filter($models);
 
-echo "Model: <select class='att-select' id='second'>"; 
-
+echo "\n Model: <select class='att-select' id='second'>"; 
+echo '\n\t <option value="select"> Please Select... </option>';
 foreach ($models as $model)
 {
-	echo "  <option value='" . $model . "'>" . $model . "</option>";
+	echo "\n\t  <option value='" . $model . "'>" . $model . "</option>";
 		
 }
 
-echo "</select>";
+echo "\n</select>";
+
+}
 
 
-
+}
 ?>

@@ -25,19 +25,11 @@ Mage::init();*/
 <script type="text/javascript"> 
 //custom JS to get URLS 
 
-function path_trim(path) 
-{ 
-    var LO = path.lastIndexOf('web'); 
-    var Trimmed = path.slice(LO + 3); 
-    return Trimmed;
-}
-
-var modelUrl = '<?php echo __DIR__; ?>/model.php';
 
 jQuery('#first').change(function(){ 
-alert(modelUrl);
+
 	jQuery.ajax({ 
-	url: 'test-me2.php',
+	url: '/test-me2.php',
 	type: 'GET',
 	data: { 'make' : this.value},
 	success: function(data) {
@@ -59,9 +51,10 @@ alert(modelUrl);
 		}
 			jQuery('#second').change(function(){ 
 			jQuery.ajax({ 
-			url: 'test-me3.php',
+			url: '/test-me3.php',
 			type: 'GET',
-			data: { 'model' : this.value},
+			data: { 'model' : this.value, 
+					'make' : jQuery("#first option:selected").val()},
 			success: function(data) {
 				if (jQuery('#third').length)
 				{
@@ -74,6 +67,16 @@ alert(modelUrl);
 				jQuery('#drilldown').append('<li>' + data + '</li>');
 				}
 				
+				/* Fourth Ajax Here */
+				jQuery('#third').change(function(){ 
+				jQuery.ajax({ 
+				url: '/test-me4.php',
+				type: 'GET',
+				data: { 'year' : this.value, 
+					'make' : jQuery("#first option:selected").val(), 
+					'model': jQuery("#second option:selected").val()},
+				success: function(data) {window.location = data } });
+				});
 				}
 			});
 		
